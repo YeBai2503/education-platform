@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧学堂</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+      }
+      .loading-wrap {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .loading-wrap .loading {
+        width: 150px;
+        height: 150px;
+      }
+      .loading-wrap .info,
+      .loading-wrap .author {
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        color: grey;
+      }
+      .loading-wrap .author {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="loading-wrap">
+        <div>
+          <img src="/logo.svg" class="loading" />
+            <p class="info">在线教育系统</p>
+          </a>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
