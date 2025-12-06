@@ -22,6 +22,8 @@
 
 * 先启动下面三个软件，再跑代码。
 
+* 测试账号 lty666,密码 s123456
+
 #### Redis
 
 * 启动：`.\redis-server.exe redis.windows.conf`
