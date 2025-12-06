@@ -1,0 +1,14 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: fet-api
+feign:
+  okhttp:
+    enabled: true
+  httpclient:
+    connection-timeout: 2000  #单位ms,默认2000
+    max-connections: 200 #线程池最大连接数
+logging:
+  level:
+    yourproject.userClient: debug

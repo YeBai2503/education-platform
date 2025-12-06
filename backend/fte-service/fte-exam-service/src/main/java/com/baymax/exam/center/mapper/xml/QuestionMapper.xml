@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baymax.exam.center.mapper.QuestionMapper">
+    <resultMap id="questionInfo" autoMapping="true" type="com.baymax.exam.center.vo.QuestionInfoVo">
+        <id property="id" column="id"/>
+        <collection property="options" javaType="java.util.List" ofType="com.baymax.exam.center.model.QuestionItem">
+            <id property="id" column="item_id"/>
+            <result property="content" column="item_content"/>
+            <result property="answer" column="item_answer"/>
+            <result property="questionId" column="question_id"/>
+        </collection>
+    </resultMap>
+    <select id="questionInfo" resultMap="questionInfo">
+        SELECT
+            q.*,
+            qi.id AS item_id,
+            qi.content AS item_content,
+            qi.answer AS item_answer,
+            qi.question_id
+        FROM
+            eq_question q
+                LEFT JOIN eq_question_item qi ON (q.id = qi.question_id)
+            where q.id=#{id}
+    </select>
+    <select id="examQuestionInfo" resultMap="questionInfo">
+        SELECT
+            q.*,
+            qi.content AS item_content,
+            qi.id AS item_id,
+            qi.answer AS item_answer
+        FROM
+            ee_exam_question eq
+                JOIN eq_question q ON ( eq.question_id = q.id )
+                LEFT JOIN eq_question_item qi ON ( eq.question_id = qi.question_id )
+        WHERE
+            eq.exam_id =#{examId}
+    </select>
+    <select id="examQuestion" resultType="com.baymax.exam.center.model.Question">
+        SELECT
+            q.*
+        FROM
+            ee_exam_question eq
+                JOIN eq_question q ON ( eq.question_id = q.id )
+        WHERE
+            eq.exam_id =#{examId}
+    </select>
+</mapper>

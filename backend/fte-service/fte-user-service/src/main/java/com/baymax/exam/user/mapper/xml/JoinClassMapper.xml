@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baymax.exam.user.mapper.JoinClassMapper">
+
+    <select id="getJoinClassUser" resultType="com.baymax.exam.user.model.UserAuthInfo">
+        SELECT
+           *
+        FROM
+            ec_join_class jc
+                INNER JOIN es_user_auth_info u ON ( jc.student_id = u.user_id )
+                INNER JOIN ec_classes c ON (
+                jc.class_id = c.id)
+            ${ew.customSqlSegment}
+    </select>
+    <select id="getJoinByCourseId" resultType="com.baymax.exam.user.model.JoinClass">
+        SELECT
+            jc.*
+        FROM
+            ec_join_class jc
+                INNER JOIN ec_classes c ON ( jc.class_id = c.id )
+        WHERE
+            jc.student_id = #{userId}
+          AND c.course_id =#{courseId}
+    </select>
+    <select id="getStudentNumberByIds" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            ec_join_class ejc
+                JOIN ec_classes ec ON ( ejc.class_id = ec.id )
+        WHERE
+            ec.teacher_id=#{userId}
+          AND
+            ec.id in
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
+    
+    <select id="getCourseStudentCount" resultType="java.lang.Integer">
+        SELECT
+            COUNT(DISTINCT jc.student_id)
+        FROM
+            ec_join_class jc
+            INNER JOIN ec_classes c ON (jc.class_id = c.id)
+        WHERE
+            c.course_id = #{courseId}
+    </select>
+</mapper>

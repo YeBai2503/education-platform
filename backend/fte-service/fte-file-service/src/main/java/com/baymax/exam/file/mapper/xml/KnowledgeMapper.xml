@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baymax.exam.file.mapper.KnowledgeMapper">
+
+    <resultMap id="knowledgeInfoMap" autoMapping="true" type="com.baymax.exam.file.vo.KnowledgeVO">
+        <!-- 移除用户关联 -->
+    </resultMap>
+    
+    <select id="getKnowledgeInfo" resultMap="knowledgeInfoMap">
+        SELECT
+            k.*
+        FROM
+            ek_knowledge k
+        WHERE
+            k.id = #{id}
+    </select>
+    
+    <select id="getUserKnowledgeList" resultMap="knowledgeInfoMap">
+        SELECT
+            k.*
+        FROM
+            ek_knowledge k
+        WHERE
+            k.user_id = #{userId}
+            <if test="type != null and type != ''">
+                AND k.type = #{type}
+            </if>
+            <if test="tag != null and tag != ''">
+                AND k.tag LIKE CONCAT('%', #{tag}, '%')
+            </if>
+        ORDER BY
+            k.created_at DESC
+    </select>
+    
+    <select id="searchPublicKnowledge" resultMap="knowledgeInfoMap">
+        SELECT
+            k.*
+        FROM
+            ek_knowledge k
+        WHERE
+            k.is_public = '1'
+            <if test="keyword != null and keyword != ''">
+                AND k.name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="type != null and type != ''">
+                AND k.type = #{type}
+            </if>
+            <if test="tag != null and tag != ''">
+                AND k.tag LIKE CONCAT('%', #{tag}, '%')
+            </if>
+        ORDER BY
+            k.created_at DESC
+    </select>
+</mapper> 

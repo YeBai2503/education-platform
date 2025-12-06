@@ -1,0 +1,38 @@
+# 忽略所有服务的target文件夹
+*/target/
+target/
+
+# 忽略编译生成的class文件
+*.class
+
+# 忽略日志文件
+*.log
+
+# 忽略IDE相关文件
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+.vscode/
+
+# 忽略Maven相关文件
+.mvn/
+mvnw
+mvnw.cmd
+
+# 忽略临时文件
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# 忽略操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 忽略Spring Boot生成的文件
+.springBeans
+

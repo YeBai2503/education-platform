@@ -1,0 +1,96 @@
+package com.baymax.exam.user.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baymax.exam.user.model.Courses;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baymax.exam.user.mapper.CoursesMapper;
+import com.baymax.exam.user.service.ICoursesService;
+import com.baymax.exam.user.vo.CourseInfoVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * <p>
+ * 课程信息 服务实现类
+ * </p>
+ *
+ */
+@Service
+public class CoursesServiceImpl extends ServiceImpl<CoursesMapper, Courses> implements ICoursesService {
+    @Autowired
+    CoursesMapper coursesMapper;
+    /**
+     * 更新课程
+     *
+     * @param courses 课程
+     * @return boolean
+     */
+    @Override
+    public boolean updateCourse(Courses courses) {
+        if(courses.getId()==null||courses.getUserId()==null){
+            return  false;
+        }
+        Map<String , Object> queryMap = new HashMap<>();
+        queryMap.put("id" , courses.getId());
+        queryMap.put("user_id" ,  courses.getUserId());
+        return update(courses,new QueryWrapper<Courses>().allEq(queryMap));
+    }
+
+    /**
+     * 获取课程信息
+     *
+     * @param id id
+     * @return {@link CourseInfoVo}
+     */
+    @Override
+    public CourseInfoVo getCourseInfo(Integer id) {
+        return coursesMapper.getCourseInfo(id);
+    }
+
+
+    /**
+     * 获得课程列表
+     *
+     * @param userId      用户id
+     * @param currentPage 当前页面
+     * @param pageSize    页面大小
+     * @param isStudent   是学生?
+     * @return {@link IPage}<{@link Courses}>
+     */
+    @Override
+    public IPage<CourseInfoVo> getCourseList(Integer userId,Integer status,Boolean isStudent, long currentPage, long pageSize) {
+        Page<CourseInfoVo> page=new Page<>(currentPage,pageSize);
+        QueryWrapper<CourseInfoVo> queryWrapper=new QueryWrapper<>();
+        Map<String,Object> queryMap=new HashMap<>();
+        if(isStudent){
+            queryMap.put("student_id",userId);
+            queryWrapper.orderByDesc("jc.created_at");
+
+        }else{
+            queryMap.put("user_id",userId);
+            queryWrapper.orderByDesc("created_at");
+        }
+        queryMap.put("status",status);
+        queryWrapper.allEq(queryMap);
+        return coursesMapper.getCourseList(page,queryWrapper,isStudent);
+    }
+
+    /**
+     * 搜索公开课程
+     *
+     * @param keyword     搜索关键词，可以为空
+     * @param currentPage 当前页码
+     * @param pageSize    每页大小
+     * @return 课程信息分页列表
+     */
+    @Override
+    public IPage<CourseInfoVo> searchPublicCourses(String keyword, long currentPage, long pageSize) {
+        Page<CourseInfoVo> page = new Page<>(currentPage, pageSize);
+        return coursesMapper.searchPublicCourses(page, keyword);
+    }
+}

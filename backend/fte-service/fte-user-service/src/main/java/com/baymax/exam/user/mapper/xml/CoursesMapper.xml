@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baymax.exam.user.mapper.CoursesMapper">
+
+    <resultMap id="courseInfoMap" autoMapping="true" type="com.baymax.exam.user.vo.CourseInfoVo">
+        <association property="teacher"  javaType="com.baymax.exam.user.model.User">
+            <result property="username" column="username"></result>
+            <result property="picture" column="picture"></result>
+            <result property="nickname" column="nickname"></result>
+        </association>
+    </resultMap>
+    <select id="getCourseList" resultMap="courseInfoMap">
+        SELECT
+            c.*,
+            u.nickname,
+            u.username,
+            u.picture
+        FROM
+            ec_courses c
+                JOIN es_user u ON ( c.user_id = u.id )
+                <if test="isStudent">
+                    JOIN ec_classes cl ON ( cl.course_id = c.id )
+                    JOIN ec_join_class jc ON (
+                    jc.class_id = cl.id)
+                </if>
+                ${ew.customSqlSegment}
+
+    </select>
+    <select id="getCourseInfo" resultMap="courseInfoMap">
+        SELECT
+            c.*,
+            u.nickname,
+            u.username,
+            u.picture
+        FROM
+            ec_courses c
+                JOIN es_user u ON ( c.user_id = u.id )
+        where c.id=#{id}
+    </select>
+    <select id="getCourseByClassId" resultType="com.baymax.exam.user.model.Courses">
+        SELECT
+            ec_courses.*
+        FROM
+            ec_courses
+        WHERE
+                ec_courses.id =(
+                SELECT
+                    course_id
+                FROM
+                    ec_classes
+                WHERE
+                    ec_classes.id = #{classId})
+    </select>
+    
+    <select id="searchPublicCourses" resultMap="courseInfoMap">
+        SELECT
+            c.*,
+            u.nickname,
+            u.username,
+            u.picture
+        FROM
+            ec_courses c
+        JOIN es_user u ON (c.user_id = u.id)
+        WHERE
+            c.is_public = '1'
+            <if test="keyword != null and keyword != ''">
+                AND c.name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        ORDER BY
+            c.created_at DESC
+    </select>
+</mapper>

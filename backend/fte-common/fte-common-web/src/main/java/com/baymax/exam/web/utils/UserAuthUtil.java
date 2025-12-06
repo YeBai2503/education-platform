@@ -1,0 +1,50 @@
+package com.baymax.exam.web.utils;
+
+import cn.hutool.json.JSONUtil;
+import com.baymax.exam.common.core.base.LoginUser;
+
+import java.util.function.IntSupplier;
+
+//用户上下文
+
+public final class UserAuthUtil {
+    private static final ThreadLocal<LoginUser> user = new ThreadLocal<LoginUser>();
+
+    public static void add(LoginUser loginUser) {
+        user.set(loginUser);
+    }
+
+    public static void remove() {
+        user.remove();
+    }
+
+    /**
+     * 得到用户id
+     *
+     * @return
+     */
+    public static Integer getUserId() {
+        return user.get().getId();
+    }
+
+    /**
+     * 获取用户ip
+     *
+     * @return {@link String}
+     */
+    public static String getUserIp() {
+        return user.get().getIp();
+    }
+
+    /**
+     * 获取用户
+     *
+     * @return {@link LoginUser}
+     */
+    public static LoginUser getUser() {
+        return user.get();
+    }
+    public static String userInfoToString(){
+        return JSONUtil.toJsonStr(user.get());
+    }
+}

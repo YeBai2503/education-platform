@@ -1,0 +1,62 @@
+server:
+  port: 8089
+spring:
+  application:
+    name: exam-experiment
+  servlet:
+    multipart:
+      max-file-size: 50MB  # 单个文件最大大小
+      max-request-size: 200MB  # 单个请求最大大小（包含所有文件）
+  datasource:
+    url: jdbc:mysql://localhost:3306/wk_experiment?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: "123456"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5 # 初始连接数
+      min-idle: 10 # 最小连接数
+      max-active: 20 # 最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" # 不统计这些请求数据
+      stat-view-servlet: # 访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+  cloud:
+    nacos:
+      server-addr: 192.168.78.91:8848
+      discovery:
+        ip: 192.168.78.91
+  file-storage: # 文件存储配置
+    default-platform: local-1 # 默认使用的存储平台
+    thumbnail-suffix: ".min.jpg" # 缩略图后缀
+    local: # 本地存储平台配置
+      - platform: local-1 # 平台标识符
+        enable-storage: true  # 启用存储
+        enable-access: true # 启用本地访问
+        domain: "http://192.168.78.91:10030/" # 域名
+        base-path: G:\aaa_study_platform\Temp\ # 文件存储位置
+        path-patterns: /static/** # 访问路径
+
+# 实验服务配置
+experiment:
+  domain-url: http://192.168.78.91:10030/ # 文件访问域名
+  
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 日志配置
+logging:
+  level:
+    com.baymax.exam: debug
+    org.springframework.web: info

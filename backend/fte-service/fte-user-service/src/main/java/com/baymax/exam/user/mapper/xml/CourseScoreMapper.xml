@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baymax.exam.user.mapper.CourseScoreMapper">
+
+    <select id="getCourseTotalScore" resultType="com.baymax.exam.user.vo.CourseScoreVo">
+        SELECT
+            c.id as courseId,
+            c.name as courseName,
+            ROUND(AVG(cs.video_score), 3) as videoScore,
+            ROUND(AVG(cs.exam_score), 3) as examScore,
+            ROUND(AVG(cs.experiment_score), 3) as experimentScore,
+            ROUND(AVG(cs.project_score), 3) as projectScore,
+            ROUND(AVG(cs.homework_score), 3) as homeworkScore,
+            ROUND(AVG(cs.sum_score), 3) as sumScore,
+            COUNT(*) as scoreCount
+        FROM
+            ec_course_evaluation cs
+            INNER JOIN ec_courses c ON (cs.course_id = c.id)
+        WHERE
+            cs.course_id = #{courseId}
+        GROUP BY
+            c.id, c.name
+    </select>
+
+    <select id="getTopRatedCourses" resultType="com.baymax.exam.user.vo.CourseScoreVo">
+        SELECT
+            c.id as courseId,
+            c.name as courseName,
+            ROUND(AVG(cs.video_score), 3) as videoScore,
+            ROUND(AVG(cs.exam_score), 3) as examScore,
+            ROUND(AVG(cs.experiment_score), 3) as experimentScore,
+            ROUND(AVG(cs.project_score), 3) as projectScore,
+            ROUND(AVG(cs.homework_score), 3) as homeworkScore,
+            ROUND(AVG(cs.sum_score), 3) as sumScore,
+            COUNT(*) as scoreCount
+        FROM
+            ec_course_evaluation cs
+            INNER JOIN ec_courses c ON (cs.course_id = c.id)
+        WHERE
+            c.is_public = '1'
+        GROUP BY
+            c.id, c.name
+        ORDER BY
+            sumScore DESC
+        LIMIT #{limit}
+    </select>
+</mapper> 
